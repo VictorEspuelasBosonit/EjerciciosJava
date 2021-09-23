@@ -49,9 +49,10 @@ public class ServicePersonImp implements ServicePerson {
             return "User not found";
         }
     }
+    
 
     @Override
-    public String updatePerson(Person person) {
+    public String updatePerson(PersonaInputDTO person) {
         return null;
                 //no funciona nada :D;
     }

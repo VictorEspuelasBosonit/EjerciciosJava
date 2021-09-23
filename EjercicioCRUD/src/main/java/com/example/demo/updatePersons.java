@@ -11,6 +11,9 @@ public class updatePersons {
     ServicePerson sp;
 
     @DeleteMapping("{id}")
-    public String updatePerson(@RequestBody Person person) {return sp.updatePerson(person); }
+    public String updatePerson(@RequestBody PersonaInputDTO person)
+    {
+        return sp.updatePerson(person);
+    }
 
 }

@@ -1,9 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.Person;
-import com.example.demo.PersonaInputDTO;
-import com.example.demo.PersonaOutputDTO;
-import com.example.demo.ServicePerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

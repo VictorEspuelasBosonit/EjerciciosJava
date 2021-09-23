@@ -18,6 +18,6 @@ public class deletePersons {
         @DeleteMapping("{id}")
         public String deletePerson(@PathVariable Integer id)
         {
-            return sp.deletePerson(id);
+                return sp.deletePerson(id);
         }
 }

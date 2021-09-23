@@ -1,5 +1,6 @@
 package com.example.jpa.infraestructure.domain;
 
+import com.example.jpa.infraestructure.dto.UserNotFoundException;
 import com.example.jpa.infraestructure.dto.input.UsuarioInputDto;
 import com.example.jpa.infraestructure.dto.output.UsuarioOutputDto;
 import com.example.jpa.infraestructure.repository.UsuarioRepositorio;
@@ -33,8 +34,8 @@ public class PersonaServiceImpl implements PersonaService{
     }
 
     @Override
-    public UsuarioOutputDto getById(Integer id) throws Exception {
-        Usuario usuario = usuarioRepositorio.findById(id).orElseThrow(() -> new Exception("No encontrado"));
+    public UsuarioOutputDto getById(Integer id) throws UserNotFoundException {
+        Usuario usuario = usuarioRepositorio.findById(id).orElseThrow(() -> new UserNotFoundException("No encontrado"));
         UsuarioOutputDto usuarioOutputDto = new UsuarioOutputDto();
         usuarioOutputDto.setActive(usuario.getActive());
         usuarioOutputDto.setCity(usuario.getCity());

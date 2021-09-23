@@ -11,5 +11,5 @@ public interface ServicePerson {
     List<Person> getAllPerson();
     Person addPerson(String name, Integer age, String poblation);
     String deletePerson(Integer id);
-    String updatePerson(Person person);
+    String updatePerson(PersonaInputDTO person);
 }

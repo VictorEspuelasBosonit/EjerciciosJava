@@ -1,6 +1,7 @@
 package com.example.jpa.infraestructure.dto;
 
 import com.example.jpa.infraestructure.domain.PersonaService;
+import com.example.jpa.infraestructure.domain.Usuario;
 import com.example.jpa.infraestructure.dto.output.UsuarioOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,10 @@ public class UserFindController {
     }
 
     @GetMapping("{id}")
-    public UsuarioOutputDto getById(@PathVariable Integer id) throws Exception {
+    public UsuarioOutputDto getById(@PathVariable Integer id) throws UserNotFoundException {
         return personaService.getById(id);
+
+
     }
 
     @GetMapping("name/{name}")
