@@ -1,5 +1,9 @@
 package com.example.demo;
 
+import com.example.demo.Person;
+import com.example.demo.PersonaInputDTO;
+import com.example.demo.PersonaOutputDTO;
+import com.example.demo.ServicePerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,8 +18,16 @@ public class addPersons {
     ServicePerson sp;
 
     @PostMapping
-    public Person addPerson(@RequestBody Person person)
+    public PersonaOutputDTO addPerson(@RequestBody PersonaInputDTO p) throws Exception
     {
-        return sp.addPerson(person.getName(), person.getAge(), person.getPoblation());
+        Person person = new Person();
+        person.setName(p.getName());
+        person.setAge(p.getAge());
+        person.setPoblation(p.getPoblation());
+        sp.addPerson(person.getName(), person.getAge(), person.getPoblation());
+
+        PersonaOutputDTO personaOutputDTO = new PersonaOutputDTO();
+        personaOutputDTO.setName(person.getName());
+        return personaOutputDTO;
     }
 }

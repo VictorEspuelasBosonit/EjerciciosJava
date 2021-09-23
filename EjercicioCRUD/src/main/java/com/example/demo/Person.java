@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import org.springframework.context.annotation.Primary;
+
+@Primary
 public class Person {
 
     Integer id =0;
