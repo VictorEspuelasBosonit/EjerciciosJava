@@ -1,6 +1,6 @@
 package com.example.jpa.infraestructure.repository;
 
-import com.example.jpa.infraestructure.domain.Usuario;
+import com.example.jpa.infraestructure.domain.Persona.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;

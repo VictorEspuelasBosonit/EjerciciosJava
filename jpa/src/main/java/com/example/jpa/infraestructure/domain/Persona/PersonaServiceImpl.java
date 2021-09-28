@@ -1,14 +1,16 @@
-package com.example.jpa.infraestructure.domain;
+package com.example.jpa.infraestructure.domain.Persona;
 
 import com.example.jpa.infraestructure.dto.UserNotFoundException;
 import com.example.jpa.infraestructure.dto.input.UsuarioInputDto;
 import com.example.jpa.infraestructure.dto.output.UsuarioOutputDto;
 import com.example.jpa.infraestructure.repository.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class PersonaServiceImpl implements PersonaService{
     @Autowired
     UsuarioRepositorio usuarioRepositorio;
@@ -52,7 +54,6 @@ public class PersonaServiceImpl implements PersonaService{
     @Override
     public List<UsuarioOutputDto> getByName(String name) throws Exception {
         List<Usuario> usuarioList = usuarioRepositorio.getByName(name);
-        //Preguntar como hacer con streams
         List<UsuarioOutputDto> usuarioOutputDtoList = new ArrayList<>();
         for (Usuario uaxu : usuarioList) {
             UsuarioOutputDto usuarioOutputDto = new UsuarioOutputDto();

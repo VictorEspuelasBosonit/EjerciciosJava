@@ -1,4 +1,4 @@
-package com.example.jpa.infraestructure.domain;
+package com.example.jpa.infraestructure.domain.Persona;
 
 import com.example.jpa.infraestructure.dto.UserNotFoundException;
 import com.example.jpa.infraestructure.dto.input.UsuarioInputDto;

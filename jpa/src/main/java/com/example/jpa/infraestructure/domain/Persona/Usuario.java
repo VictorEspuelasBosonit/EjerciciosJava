@@ -1,5 +1,7 @@
-package com.example.jpa.infraestructure.domain;
+package com.example.jpa.infraestructure.domain.Persona;
 
+import com.example.jpa.infraestructure.domain.Estudiante.Student;
+import com.example.jpa.infraestructure.domain.Profesor.Profesor;
 import com.example.jpa.infraestructure.dto.input.UsuarioInputDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +11,7 @@ import javax.validation.constraints.Email;
 import java.util.Date;
 
 @Entity
+@Table(name = "Usuario")
 @Data
 @NoArgsConstructor
 public class Usuario {
@@ -16,8 +19,13 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.AUTO)
     int id_persona;
 
-    @Column(nullable = false,length = 50)
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY)
+    Student student;
 
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY)
+    Profesor profesor;
+
+    @Column(nullable = false,length = 50)
     @Length(min = 6,max = 10, message = "The field must be at least 6 characters and at less 50")
     String user;
 
@@ -27,6 +35,7 @@ public class Usuario {
     @Column(nullable = false)
     String name;
 
+    @Column(nullable = false)
     String surname;
 
     @Column(nullable = false)

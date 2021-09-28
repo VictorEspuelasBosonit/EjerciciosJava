@@ -1,6 +1,6 @@
 package com.example.jpa.infraestructure.dto.output;
 
-import com.example.jpa.infraestructure.domain.Usuario;
+import com.example.jpa.infraestructure.domain.Persona.Usuario;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
