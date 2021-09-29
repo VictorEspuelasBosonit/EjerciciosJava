@@ -1,4 +1,4 @@
-package com.example.jpa.infraestructure.domain.Estudiante.InsertController;
+package com.example.jpa.infraestructure.domain.Estudiante.Controller;
 
 import com.example.jpa.infraestructure.domain.Estudiante.StudentService;
 import com.example.jpa.infraestructure.dto.input.StudentInputDto;

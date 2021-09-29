@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StudentOutputDto {
     String id_student;
-    Usuario id_usuario;
-    Profesor id_profesor;
+    Integer usuario;
+    String profesor;
     int num_hours_week;
     String coments;
     String branch;
 
     public StudentOutputDto(Student s) {
-        this.id_usuario = s.getId_usuario();
+        this.usuario = s.getUsuario().getId_persona();
         this.id_student = s.getId_student();
-        this.id_profesor = s.getId_profesor();
+        this.profesor = s.getProfesor().getId_profesor();
         this.num_hours_week = s.getNum_hours_week();
         this.coments = s.getComents();
         this.branch = s.getBranch();

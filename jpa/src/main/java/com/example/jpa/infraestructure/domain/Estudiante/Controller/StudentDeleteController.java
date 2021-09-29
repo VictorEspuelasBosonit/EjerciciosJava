@@ -1,6 +1,6 @@
-package com.example.jpa.infraestructure.dto;
+package com.example.jpa.infraestructure.domain.Estudiante.Controller;
 
-import com.example.jpa.infraestructure.domain.Persona.PersonaService;
+import com.example.jpa.infraestructure.domain.Estudiante.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserDeleteController {
+@RequestMapping("/student")
+public class StudentDeleteController {
 
     @Autowired
-    PersonaService personaService;
+    StudentService studentService;
 
     @DeleteMapping("{id}")
-    public void deleteUsuarioById(@PathVariable("id") Integer id) {
-        personaService.deleteUsuarioById(id);
+    public void deleteStudentById(@PathVariable("id_student") String id){
+        studentService.deleteStudentById(id);
     }
 }

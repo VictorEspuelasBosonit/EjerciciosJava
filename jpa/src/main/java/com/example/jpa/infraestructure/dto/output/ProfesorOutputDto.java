@@ -15,14 +15,16 @@ import java.util.List;
 @NoArgsConstructor
 public class ProfesorOutputDto {
     String id_profesor;
-    Usuario id_usuario;
+    Integer id_usuario;
     String coments;
     String branch;
     List<Student> students = new ArrayList<>();
 
     public ProfesorOutputDto(Profesor profesor){
         this.id_profesor = profesor.getId_profesor();
-        this.id_usuario = new Usuario();
+        if(profesor.getUsuario() != null) {
+            this.id_usuario = profesor.getUsuario().getId_persona();
+        }
         this.coments = profesor.getComents();
         this.branch = profesor.getBranch();
         this.students = new ArrayList<>();

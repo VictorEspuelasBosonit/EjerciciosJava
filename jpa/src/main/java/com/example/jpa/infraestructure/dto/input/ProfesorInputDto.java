@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ProfesorInputDto {
-    String id_profesor;
     Usuario usuario;
     String coments;
     String branch;

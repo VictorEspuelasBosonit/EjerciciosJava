@@ -7,10 +7,12 @@ import com.example.jpa.infraestructure.dto.output.UsuarioOutputDto;
 import com.example.jpa.infraestructure.repository.ProfesorRepositorio;
 import com.example.jpa.infraestructure.repository.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ProfesorServiceImpl implements ProfesorService{
 
     @Autowired

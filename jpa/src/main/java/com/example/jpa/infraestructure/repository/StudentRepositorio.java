@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface StudentRepositorio extends JpaRepository<Student, String> {
  //   @Query("select u from Student u where u.name = ?1")
-      List<Student> findByComents(String coments);
+  //    List<Student> findByComents(String coments);
 }

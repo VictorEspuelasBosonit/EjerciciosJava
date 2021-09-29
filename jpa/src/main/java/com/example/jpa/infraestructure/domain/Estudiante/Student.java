@@ -23,7 +23,7 @@ public class Student {
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_persona")
-    Usuario id_usuario;
+    Usuario usuario;
 
     @Column(nullable = false)
     int num_hours_week;
@@ -33,7 +33,7 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_profesor")
-    Profesor id_profesor;
+    Profesor profesor;
 
     @Column(nullable = false)
     String branch;
@@ -43,8 +43,8 @@ public class Student {
 
     public Student(StudentInputDto studentInputDto, Usuario usuarioInputDTO, Profesor profesorInputDto) {
         this.num_hours_week = studentInputDto.getNum_hours_week();
-        this.id_profesor = profesorInputDto;
-        this.id_usuario = usuarioInputDTO;
+        this.profesor = profesorInputDto;
+        this.usuario = usuarioInputDTO;
         this.coments = studentInputDto.getComents();
         this.branch = studentInputDto.getBranch();
 

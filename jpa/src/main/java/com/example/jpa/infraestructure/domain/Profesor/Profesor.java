@@ -26,7 +26,7 @@ public class Profesor {
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_persona")
-    Usuario id_usuario;
+    Usuario usuario;
 
     @Column(nullable = false)
     String coments;
