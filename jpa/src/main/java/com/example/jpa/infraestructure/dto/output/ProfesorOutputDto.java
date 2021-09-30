@@ -1,34 +1,37 @@
 package com.example.jpa.infraestructure.dto.output;
 
-import com.example.jpa.infraestructure.domain.Estudiante.Student;
-import com.example.jpa.infraestructure.domain.Persona.Usuario;
+import com.example.jpa.infraestructure.domain.Persona.Persona;
 import com.example.jpa.infraestructure.domain.Profesor.Profesor;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfesorOutputDto {
-    String id_profesor;
-    Integer id_usuario;
-    String coments;
-    String branch;
-    List<Student> students = new ArrayList<>();
+public class ProfesorOutputDto extends PersonaOutputDto {
 
-    public ProfesorOutputDto(Profesor profesor){
-        this.id_profesor = profesor.getId_profesor();
-        if(profesor.getUsuario() != null) {
-            this.id_usuario = profesor.getUsuario().getId_persona();
+    private String id_profesor;
+    private int id_persona;
+    private String comments;
+    @NotNull
+    private String branch;
+
+    public ProfesorOutputDto(Persona persona) {
+        super(persona);
+        if (persona == null) {
+            return;
         }
-        this.coments = profesor.getComents();
-        this.branch = profesor.getBranch();
-        this.students = new ArrayList<>();
-
+        Profesor profesor = persona.getProfesor();
+        this.setId_profesor(profesor.getId_profesor());
+        this.setId_persona(profesor.getPersona().getId_persona());
+        this.setBranch(profesor.getBranch());
+        this.setComments(profesor.getComments());
     }
 
 }
+

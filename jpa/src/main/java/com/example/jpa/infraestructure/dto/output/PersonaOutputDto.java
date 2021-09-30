@@ -19,20 +19,28 @@ public class PersonaOutputDto {
     String personal_email;
     String city;
     Boolean active;
-    Date created_date;
+    Date create_date;
+    String imagen_url;
+    Date termination_date;
 
 
-    public PersonaOutputDto(Persona persona) {
-        this.id_persona = persona.getId_persona();
-        this.user = persona.getUser();
-        this.password = persona.getPassword();
-        this.name = persona.getName();
-        this.surname = persona.getSurname();
-        this.company_email = persona.getCompany_email();
-        this.personal_email = persona.getPersonal_email();
-        this.city = persona.getCity();
-        this.active = persona.getActive();
-        this.created_date = persona.getCreated_date();
+    public PersonaOutputDto(Persona p) {
+        if (p == null) {
+            return;
+        }
+        setId_persona(p.getId_persona());
+        setName(p.getName());
+        setUser(p.getUser());
+        setPassword(p.getPassword());
+        setSurname(p.getSurname());
+        setCompany_email(p.getCompany_email());
+        setPersonal_email(p.getPersonal_email());
+        setCity(p.getCity());
+        setActive(p.getActive());
+        setCreate_date(p.getCreate_date());
+        setImagen_url(p.getImagen_url());
+        setTermination_date(p.getTermination_date());
+
     }
 
 }

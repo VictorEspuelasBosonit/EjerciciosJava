@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Data
 public class PersonaInputDto {
-    @Length(min = 6,max = 10, message = "The field must be at least 6 characters and at less 50")
+    @Length(min = 6, max = 10, message = "The field must be at least 6 characters and at less 50")
     public String user;
     @NotNull
     public String password;
@@ -20,7 +20,7 @@ public class PersonaInputDto {
 
     @NotNull
     @Email(message = "No valido")
-    public  String company_email;
+    public String company_email;
 
     @NotNull
     @Email(message = "No valido")

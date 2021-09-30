@@ -1,115 +1,80 @@
 package com.example.jpa.infraestructure.domain.Persona;
 
-import com.example.jpa.infraestructure.dto.UserNotFoundException;
-import com.example.jpa.infraestructure.dto.input.UsuarioInputDto;
-import com.example.jpa.infraestructure.dto.output.UsuarioOutputDto;
-import com.example.jpa.infraestructure.repository.UsuarioRepositorio;
+import com.example.jpa.infraestructure.Exceptions.NotFoundException;
+import com.example.jpa.infraestructure.domain.Estudiante.Student;
+import com.example.jpa.infraestructure.domain.Profesor.Profesor;
+import com.example.jpa.infraestructure.dto.input.PersonaInputDto;
+import com.example.jpa.infraestructure.dto.output.PersonaOutputDto;
+import com.example.jpa.infraestructure.repository.PersonaRepositorio;
+import com.example.jpa.infraestructure.repository.ProfesorRepositorio;
+import com.example.jpa.infraestructure.repository.StudentRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class PersonaServiceImpl implements PersonaService{
+public class PersonaServiceImpl implements PersonaService {
+
     @Autowired
-    UsuarioRepositorio usuarioRepositorio;
+    PersonaRepositorio personaRepositorio;
 
-    @Override
-    public List<UsuarioOutputDto> getAll() {
-        List<Usuario> usuarioList = usuarioRepositorio.findAll();
-        List<UsuarioOutputDto> usuarioOutputDtoList = new ArrayList<>();
-        for (Usuario uaxu : usuarioList) {
-            UsuarioOutputDto usuarioOutputDto = new UsuarioOutputDto();
-            usuarioOutputDto.setActive(uaxu.getActive());
-            usuarioOutputDto.setCity(uaxu.getCity());
-            usuarioOutputDto.setCompany_email(uaxu.getCompany_email());
-            usuarioOutputDto.setName(uaxu.getName());
-            usuarioOutputDto.setSurname(uaxu.getSurname());
-            usuarioOutputDto.setUser(uaxu.getUser());
-            usuarioOutputDto.setPersonal_email(uaxu.getPersonal_email());
-            usuarioOutputDto.setPassword(uaxu.getPassword());
-            usuarioOutputDto.setCreated_date(uaxu.getCreated_date());
-            usuarioOutputDtoList.add(usuarioOutputDto);
+    @Autowired
+    ProfesorRepositorio profesorRepositorio;
+
+    @Autowired
+    StudentRepositorio studentRepositorio;
+
+    public void añadir(Persona persona) {
+        System.out.println("Entrando a add Persona");
+        personaRepositorio.save(persona);
+        System.out.println("hola");
+    }
+
+    public PersonaOutputDto añadirDto(PersonaInputDto personaInputDTO) {
+        System.out.println("Entrando a add Persona");
+        Persona p = new Persona(personaInputDTO);
+        personaRepositorio.save(p);
+        PersonaOutputDto output = new PersonaOutputDto(p);
+        return output;
+    }
+
+    public void modificar(int id, PersonaInputDto persona) throws NotFoundException {
+        Persona persona1 = personaRepositorio.findById(id).orElseThrow(() -> new NotFoundException("No existe una persona con ese ID"));
+        persona1.setPersona(persona);
+        personaRepositorio.save(persona1);
+    }
+
+    public void borrar(int id) throws NotFoundException {
+        Persona persona = personaRepositorio.findById(id).orElseThrow(() -> new NotFoundException("No existe una persona con ese ID"));
+        Profesor profesor = persona.getProfesor();
+        Student student = persona.getStudent();
+        if (profesor != null) {
+            //profesorRepository.deleteById(profesor.getId_profesor());
+            throw new NotFoundException("Esta persona tiene un profesor asignado, no puede ser borrada.");
+        } else {
+            if (student != null) {
+                //studentRepository.deleteById(student.getId_student());
+                throw new NotFoundException("Esta persona tiene un estudiante asignado, no puede ser borrada.");
+            } else {
+                personaRepositorio.delete(persona);
+            }
         }
-        return usuarioOutputDtoList;
     }
 
-    @Override
-    public UsuarioOutputDto getById(Integer id) throws UserNotFoundException {
-        Usuario usuario = usuarioRepositorio.findById(id).orElseThrow(() -> new UserNotFoundException("No encontrado"));
-        UsuarioOutputDto usuarioOutputDto = new UsuarioOutputDto();
-        usuarioOutputDto.setActive(usuario.getActive());
-        usuarioOutputDto.setCity(usuario.getCity());
-        usuarioOutputDto.setCompany_email(usuario.getCompany_email());
-        usuarioOutputDto.setName(usuario.getName());
-        usuarioOutputDto.setSurname(usuario.getSurname());
-        usuarioOutputDto.setUser(usuario.getUser());
-        usuarioOutputDto.setPersonal_email(usuario.getPersonal_email());
-        usuarioOutputDto.setPassword(usuario.getPassword());
-        usuarioOutputDto.setCreated_date(usuario.getCreated_date());
-        return usuarioOutputDto;
+    public Persona getid(int id) throws NotFoundException {
+        Persona persona = personaRepositorio.findById(id).orElseThrow(() -> new NotFoundException("Persona no encontrada"));
+        return persona;
     }
 
-    @Override
-    public List<UsuarioOutputDto> getByName(String name) throws Exception {
-        List<Usuario> usuarioList = usuarioRepositorio.getByName(name);
-        List<UsuarioOutputDto> usuarioOutputDtoList = new ArrayList<>();
-        for (Usuario uaxu : usuarioList) {
-            UsuarioOutputDto usuarioOutputDto = new UsuarioOutputDto();
-            usuarioOutputDto.setActive(uaxu.getActive());
-            usuarioOutputDto.setCity(uaxu.getCity());
-            usuarioOutputDto.setCompany_email(uaxu.getCompany_email());
-            usuarioOutputDto.setName(uaxu.getName());
-            usuarioOutputDto.setSurname(uaxu.getSurname());
-            usuarioOutputDto.setUser(uaxu.getUser());
-            usuarioOutputDto.setPersonal_email(uaxu.getPersonal_email());
-            usuarioOutputDto.setPassword(uaxu.getPassword());
-            usuarioOutputDto.setCreated_date(uaxu.getCreated_date());
-            usuarioOutputDtoList.add(usuarioOutputDto);
-        }
-        return usuarioOutputDtoList;
+    public List<PersonaOutputDto> getByNombre(String nombre) {
+        return personaRepositorio.findByName(nombre).stream().map(p -> new PersonaOutputDto(p)).collect(Collectors.toList());
     }
 
-    @Override
-    public UsuarioOutputDto addUsuario(UsuarioInputDto u) {
-        Usuario usuario = new Usuario(u);
-        usuarioRepositorio.saveAndFlush(usuario);
-        UsuarioOutputDto usuarioOutputDto = new UsuarioOutputDto(usuario);
-        return usuarioOutputDto;
+    public List<PersonaOutputDto> mostrar() {
+        return personaRepositorio.findAll().stream().map(p -> new PersonaOutputDto(p)).collect(Collectors.toList());
     }
 
-    @Override
-    public UsuarioOutputDto updateById(Integer id, UsuarioInputDto u) throws Exception {
-        Usuario usuario = usuarioRepositorio.findById(id).orElseThrow(() -> new Exception("No encontrado"));
-        if (usuario != null) {
-            usuario.setActive(u.getActive());
-            usuario.setCity(u.getCity());
-            usuario.setCompany_email(u.getCompany_email());
-            usuario.setName(u.getName());
-            usuario.setSurname(u.getSurname());
-            usuario.setUser(u.getUser());
-            usuario.setPersonal_email(u.getPersonal_email());
-            usuario.setPassword(u.getPassword());
-            usuario.setCreated_date(u.getCreated_date());
-        }
-        usuarioRepositorio.saveAndFlush(usuario);
 
-        UsuarioOutputDto usuarioOutputDto = new UsuarioOutputDto();
-        usuarioOutputDto.setActive(usuario.getActive());
-        usuarioOutputDto.setCity(usuario.getCity());
-        usuarioOutputDto.setCompany_email(usuario.getCompany_email());
-        usuarioOutputDto.setName(usuario.getName());
-        usuarioOutputDto.setSurname(usuario.getSurname());
-        usuarioOutputDto.setUser(usuario.getUser());
-        usuarioOutputDto.setPersonal_email(usuario.getPersonal_email());
-        usuarioOutputDto.setPassword(usuario.getPassword());
-        usuarioOutputDto.setCreated_date(usuario.getCreated_date());
-        return usuarioOutputDto;
-    }
-
-    @Override
-    public void deleteUsuarioById(Integer id) {
-        usuarioRepositorio.delete(usuarioRepositorio.getById(id));
-    }
 }

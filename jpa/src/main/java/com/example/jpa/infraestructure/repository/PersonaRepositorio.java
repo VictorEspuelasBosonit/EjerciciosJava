@@ -2,12 +2,12 @@ package com.example.jpa.infraestructure.repository;
 
 import com.example.jpa.infraestructure.domain.Persona.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-
+@Repository
 public interface PersonaRepositorio extends JpaRepository<Persona, Integer> {
+    List<Persona> findByName(String name);
 
-    @Query("select u from Usuario u where u.name = ?1")
-    List<Persona> getByName(String name);
 }

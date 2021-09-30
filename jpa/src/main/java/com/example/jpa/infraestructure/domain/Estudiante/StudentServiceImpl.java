@@ -1,69 +1,158 @@
 package com.example.jpa.infraestructure.domain.Estudiante;
 
-import com.example.jpa.infraestructure.domain.Persona.Usuario;
+import com.example.jpa.infraestructure.Exceptions.NotFoundException;
+import com.example.jpa.infraestructure.domain.Materia.Asignatura;
+import com.example.jpa.infraestructure.domain.Materia.AsignaturaServiceImpl;
+import com.example.jpa.infraestructure.domain.Persona.Persona;
+import com.example.jpa.infraestructure.domain.Persona.PersonaServiceImpl;
 import com.example.jpa.infraestructure.domain.Profesor.Profesor;
+import com.example.jpa.infraestructure.domain.Profesor.ProfesorServiceImpl;
 import com.example.jpa.infraestructure.dto.input.StudentInputDto;
-import com.example.jpa.infraestructure.dto.output.StudentOutputDto;
+import com.example.jpa.infraestructure.dto.output.PersonaOutputDto;
+import com.example.jpa.infraestructure.dto.output.StudentPersonaOutputDto;
+import com.example.jpa.infraestructure.repository.AsignaturaRepositorio;
 import com.example.jpa.infraestructure.repository.ProfesorRepositorio;
 import com.example.jpa.infraestructure.repository.StudentRepositorio;
-import com.example.jpa.infraestructure.repository.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class StudentServiceImpl implements StudentService{
+public class StudentServiceImpl implements StudentService {
 
     @Autowired
     StudentRepositorio studentRepositorio;
 
     @Autowired
+    PersonaServiceImpl personaService;
+
+    @Autowired
+    ProfesorServiceImpl profesorService;
+
+    @Autowired
     ProfesorRepositorio profesorRepositorio;
 
     @Autowired
-    UsuarioRepositorio usuarioRepositorio;
+    AsignaturaRepositorio asignaturaRepositorio;
 
-    @Override
-    public List<StudentOutputDto> getAll() {
-        List<Student> studentList = studentRepositorio.findAll();
-        List<StudentOutputDto> studentOutputDtoList = new ArrayList<>();
-        for (Student uaxu : studentList) {
-            StudentOutputDto studentOutputDto = new StudentOutputDto();
-            studentOutputDto.setNum_hours_week(uaxu.getNum_hours_week());
-            studentOutputDto.setComents(uaxu.getComents());
-            studentOutputDto.setBranch(uaxu.getBranch());
-            studentOutputDtoList.add(studentOutputDto);
+    @Autowired
+    AsignaturaServiceImpl asignaturaService;
 
+    public StudentPersonaOutputDto añadirDto(StudentInputDto studentInputDto) throws NotFoundException {
+        Persona persona = personaService.getid(studentInputDto.getId_persona());
+        Profesor profesor = profesorService.getid(studentInputDto.getId_profesor());
+        List<Asignatura> asignaturaList = new ArrayList<>();
+        if (studentInputDto.getAsignaturas() != null) {
+            for (String a :
+                    studentInputDto.getAsignaturas()) {
+                asignaturaList.add(asignaturaService.getid(a));
+            }
+        }
+
+        Student student = new Student(studentInputDto, persona, profesor, asignaturaList);
+
+        List<Student> studentList = studentRepositorio.findAll().stream().collect(Collectors.toList());
+        for (Student s :
+                studentList) {
+            if (s.getPersona().getId_persona() == studentInputDto.getId_persona()) {
+                throw new NotFoundException("Esa persona ya es un estudiante");
+            }
 
         }
-        return studentOutputDtoList;
+
+        List<Profesor> profesorList = profesorRepositorio.findAll().stream().collect(Collectors.toList());
+        for (Profesor p :
+                profesorList) {
+            if (p.getPersona().getId_persona() == studentInputDto.getId_persona()) {
+                throw new NotFoundException("Esa persona ya es un profesor");
+            }
+
+        }
+        persona.setStudent(student);
+        studentRepositorio.save(student);
+        StudentPersonaOutputDto output = new StudentPersonaOutputDto(student);
+        return output;
     }
 
-    @Override
-    public StudentOutputDto getById(String id_student) throws Exception {
-        Student student = studentRepositorio.findById(id_student).orElseThrow(() -> new Exception("No encontrado"));;
-        return null;
+
+    public void borrar(String id) throws NotFoundException {
+        Student student = studentRepositorio.findById(id).orElseThrow(() -> new NotFoundException("No existe un estudiante con ese ID"));
+        Profesor profesor = student.getProfesor();
+        Persona persona = student.getPersona();
+        List<Asignatura> asignaturas = student.getAsignaturas();
+
+        if (profesor != null) {
+            throw new NotFoundException("El estudiante tiene un profesor asignado. No puede ser borrado.");
+        } else {
+            if (persona != null) {
+                throw new NotFoundException("El estudiante tiene una persona asignado. No puede ser borrado.");
+            } else {
+                if (asignaturas != null) {
+                    throw new NotFoundException("El estudiante tiene alguna asignatura asignada. No puede ser borrado.");
+                } else {
+                    studentRepositorio.deleteById(id);
+                }
+            }
+        }
+
+
     }
 
-    @Override
-    public StudentOutputDto addStudent(StudentInputDto s) {
-        Usuario usuario = usuarioRepositorio.findById(s.getId_usuario()).orElseThrow();
-        Profesor profesor = profesorRepositorio.findById(s.getId_profesor()).orElseThrow();
-        Student student = new Student(s, usuario, profesor);
-        studentRepositorio.saveAndFlush(student);
-        StudentOutputDto studentOutputDto = new StudentOutputDto(student);
-        return studentOutputDto;
+
+    public Student getid(String id) throws NotFoundException {
+        Student student = studentRepositorio.findById(id).orElseThrow(() -> new NotFoundException("Estudiante no encontrado"));
+        return student;
     }
 
-//    @Override
-//    public StudentOutputDto updateById(Integer id, StudentInputDto u) throws Exception {
-//        return null;
-//    }
+    public List<PersonaOutputDto> mostrarSoloPersona() {
+        return studentRepositorio.findAll().stream().map(p -> new PersonaOutputDto(p.getPersona())).collect(Collectors.toList());
+    }
 
-    public void deleteStudentById(String id_student) {
-        studentRepositorio.delete(studentRepositorio.getById(id_student));
+    public List<PersonaOutputDto> mostrar() {
+        return studentRepositorio.findAll().stream().map(p -> new StudentPersonaOutputDto(p)).collect(Collectors.toList());
+    }
 
+    public void modificar(String id, StudentInputDto studentInputDto) throws NotFoundException {
+        Student student = studentRepositorio.findById(id).orElseThrow(() -> new NotFoundException("No existe una persona con ese ID"));
+        Persona persona = personaService.getid(studentInputDto.getId_persona());
+        Profesor profesor = profesorService.getid(studentInputDto.getId_profesor());
+        List<Asignatura> asignaturaList = new ArrayList<>();
+        for (String a :
+                studentInputDto.getAsignaturas()) {
+            asignaturaList.add(asignaturaService.getid(a));
+        }
+        student.setStudent(studentInputDto, persona, profesor, asignaturaList);
+        studentRepositorio.save(student);
+    }
+
+    public void añadirAsignatura(String id, List<String> id_asignatura) throws NotFoundException {
+        Student student = studentRepositorio.findById(id).orElseThrow(() -> new NotFoundException("No existe una persona con ese ID"));
+        List<Asignatura> asignaturas = student.getAsignaturas();
+        for (String a :
+                id_asignatura) {
+            Asignatura asignatura = asignaturaRepositorio.findById(a).orElseThrow(() -> new NotFoundException("Una de las asignaturas introducidas no existe"));
+            asignaturas.add(asignatura);
+            asignatura.getStudent().add(student);
+            asignaturaRepositorio.save(asignatura);
+        }
+        student.setAsignaturas(asignaturas);
+        studentRepositorio.save(student);
+    }
+
+    public void eliminarAsignatura(String id, List<String> id_asignatura) throws NotFoundException {
+        Student student = studentRepositorio.findById(id).orElseThrow(() -> new NotFoundException("No existe una persona con ese ID"));
+        List<Asignatura> asignaturas = student.getAsignaturas();
+        for (String a :
+                id_asignatura) {
+            Asignatura asignatura = asignaturaRepositorio.findById(a).orElseThrow(() -> new NotFoundException("Una de las asignaturas introducidas no existe"));
+            asignaturas.remove(asignatura);
+            asignatura.getStudent().remove(student);
+            asignaturaRepositorio.save(asignatura);
+        }
+        student.setAsignaturas(asignaturas);
+        studentRepositorio.save(student);
     }
 }

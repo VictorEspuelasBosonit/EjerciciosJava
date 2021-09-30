@@ -1,14 +1,26 @@
 package com.example.jpa.infraestructure.dto.input;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
 @Data
-@AllArgsConstructor
 public class StudentInputDto {
-    String id_profesor;
-    int id_usuario;
-    int num_hours_week;
-    String coments;
-    String branch;
+
+    @NotNull
+    public Integer id_persona;
+
+    @NotNull
+    public Integer num_hours_week;
+
+    public String comments;
+
+    public String id_profesor;
+
+    public List<String> asignaturas;
+
+    @NotNull
+    public String branch;
+
 }

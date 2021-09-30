@@ -1,6 +1,6 @@
-package com.example.jpa.infraestructure.domain.Estudiante.Controller;
+package com.example.jpa.infraestructure.domain.Persona.Controller;
 
-import com.example.jpa.infraestructure.domain.Estudiante.StudentService;
+import com.example.jpa.infraestructure.domain.Persona.PersonaService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,16 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/estudiante")
-public class StudentDeleteController {
+@RequestMapping("/persona")
+public class PersonaDeleteController {
 
     @Autowired
-    StudentService studentService;
+    PersonaService personaService;
+
 
     @DeleteMapping("{id}")
-    public void deleteStudent(@PathVariable String id) throws NotFoundException {
-        studentService.borrar(id);
+    public void borraPersona(@PathVariable Integer id) throws NotFoundException {
+        personaService.borrar(id);
     }
 
 
 }
+

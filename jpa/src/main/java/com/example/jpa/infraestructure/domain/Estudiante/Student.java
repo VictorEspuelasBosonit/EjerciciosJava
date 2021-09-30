@@ -1,53 +1,62 @@
 package com.example.jpa.infraestructure.domain.Estudiante;
 
-import com.example.jpa.infraestructure.domain.Persona.Usuario;
+import com.example.jpa.infraestructure.domain.Materia.Asignatura;
+import com.example.jpa.infraestructure.domain.Persona.Persona;
 import com.example.jpa.infraestructure.domain.Profesor.Profesor;
 import com.example.jpa.infraestructure.dto.input.StudentInputDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "Student")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "student")
 public class Student {
-
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     String id_student;
 
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "id_persona")
-    Usuario usuario;
+    @OneToOne()
+    @JoinColumn(name = "ID_Persona")
+    Persona persona;
 
-    @Column(nullable = false)
-    int num_hours_week;
+    @Column()
+    Integer num_hours_week;
 
-    @Column(nullable = false)
-    String coments;
+    @Column
+    String comments;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_profesor")
+    @JoinColumn(name = "ID_Profesor")
     Profesor profesor;
 
-    @Column(nullable = false)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_asignatura")
+    List<Asignatura> asignaturas;
+
+
+    @Column()
     String branch;
 
-//    @ManyToMany( cascade = CascadeType.ALL, mappedBy = "students")
-//    Set<StudentMatter> studentMatters;
 
-    public Student(StudentInputDto studentInputDto, Usuario usuarioInputDTO, Profesor profesorInputDto) {
-        this.num_hours_week = studentInputDto.getNum_hours_week();
-        this.profesor = profesorInputDto;
-        this.usuario = usuarioInputDTO;
-        this.coments = studentInputDto.getComents();
-        this.branch = studentInputDto.getBranch();
+    public Student(StudentInputDto studentInputDto, Persona persona, Profesor profesor, List<Asignatura> asignaturaList) {
+        setStudent(studentInputDto, persona, profesor, asignaturaList);
 
-// ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR
+    }
+
+    public void setStudent(StudentInputDto studentInputDto, Persona persona, Profesor profesor, List<Asignatura> asignaturaList) {
+        if (studentInputDto == null)
+            return;
+        if (studentInputDto.getId_persona() != null) this.persona = persona;
+        if (studentInputDto.getNum_hours_week() != null) this.num_hours_week = studentInputDto.num_hours_week;
+        if (studentInputDto.getComments() != null) this.comments = studentInputDto.comments;
+        if (studentInputDto.getAsignaturas() != null) this.asignaturas = asignaturaList;
+        if (studentInputDto.getId_profesor() != null) this.profesor = profesor;
+        if (studentInputDto.getBranch() != null) this.branch = studentInputDto.branch;
     }
 }
